@@ -29,22 +29,20 @@ jobs:
       #   run: |
       #     pytest || echo "Skipping tests / optional"
 
-      - name: Deploy backend to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.BACKEND_APP }}
-          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./table-extract-backend
+      # - name: Deploy backend to Azure
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.BACKEND_APP }}
+      #     publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+      #     package: ./table-extract-backend
 
-      - name: Initialize the virtual environment for frontend
-        working-directory: ./table-extract-frontend
-        run: |
-          python -m venv venv
-          source venv/bin/activate && pip install -r requirements.txt
+      - name: Install requirements for frontend
+        working-directory: table-extract-frontend
+        run: pip install -r requirements.txt
     
       - name: Deploy frontend to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.FRONTEND_APP }}
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: ./table-extract-frontend
+          package: table-extract-frontend
