@@ -1,0 +1,52 @@
+name: Deploy TableExtract
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      BACKEND_APP: tablextract-api
+      FRONTEND_APP: tablextract-ui
+      PYTHON_VERSION: "3.10" 
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        working-directory: .
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # TODO: add pytest to requirements.txt
+      # - name: Test backend (optional)
+      #   working-directory: ./tests
+      #   run: |
+      #     pytest || echo "Skipping tests / optional"
+
+      - name: Deploy backend to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.BACKEND_APP }}
+          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+          package: ./backend
+          configuration-strings: "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
+
+      - name: Deploy frontend to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.FRONTEND_APP }}
+          publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
+          package: ./frontend
+          configuration-strings: "API_BASE_URL=https://${{ env.BACKEND_APP }}.azurewebsites.net"
