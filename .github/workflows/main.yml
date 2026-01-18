@@ -40,7 +40,7 @@ jobs:
         with:
           app-name: ${{ env.BACKEND_APP }}
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./backend
+          package: ./table-extract-backend
           configuration-strings: "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
 
       - name: Deploy frontend to Azure
@@ -48,5 +48,5 @@ jobs:
         with:
           app-name: ${{ env.FRONTEND_APP }}
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: ./frontend
+          package: ./table-extract-frontend
           configuration-strings: "API_BASE_URL=https://${{ env.BACKEND_APP }}.azurewebsites.net"
