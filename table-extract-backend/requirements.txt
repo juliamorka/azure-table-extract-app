@@ -2,3 +2,4 @@ fastapi
 uvicorn
 azure-storage-blob
 azure-data-tables
+python-multipart
