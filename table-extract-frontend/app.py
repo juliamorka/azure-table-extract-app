@@ -1,8 +1,9 @@
 import streamlit as st
 import requests
 import time
+import os
 
-API_BASE_URL = st.secrets.get("API_BASE_URL")
+API_BASE_URL = os.environ.get("API_BASE_URL")
 UPLOAD_ENDPOINT = f"{API_BASE_URL}/jobs"
 STATUS_ENDPOINT = f"{API_BASE_URL}/jobs/{{job_id}}"
 DOWNLOAD_ENDPOINT = f"{API_BASE_URL}/jobs/{{job_id}}/result"
