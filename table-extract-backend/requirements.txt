@@ -1,5 +1,7 @@
 fastapi
 uvicorn
+pandas
 azure-storage-blob
 azure-data-tables
 python-multipart
+azure-ai-formrecognizer
