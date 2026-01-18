@@ -2,10 +2,7 @@ import streamlit as st
 import requests
 import time
 
-API_BASE_URL = st.secrets.get(
-    "API_BASE_URL",
-    "https://your-backend-api.azurewebsites.net" # TODO: update with real API address!
-)
+API_BASE_URL = st.secrets.get("API_BASE_URL")
 UPLOAD_ENDPOINT = f"{API_BASE_URL}/jobs"
 STATUS_ENDPOINT = f"{API_BASE_URL}/jobs/{{job_id}}"
 DOWNLOAD_ENDPOINT = f"{API_BASE_URL}/jobs/{{job_id}}/result"
