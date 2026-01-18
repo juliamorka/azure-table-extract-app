@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+azure-storage-blob
+azure-data-tables
+streamlit
