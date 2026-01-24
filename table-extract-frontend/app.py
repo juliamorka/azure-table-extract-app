@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import time
 import os
+import pandas as pd
 
 # API_BASE_URL = os.environ.get("API_BASE_URL")
 FUNCTION_URL = os.environ.get("FUNCTION_URL")
