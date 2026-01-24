@@ -36,12 +36,16 @@ if uploaded_file is not None:
                 FUNCTION_URL,
                 files={"file": uploaded_file}
             )
+            try:
+                result = response.json()
         
-            result = response.json()
-        
-            for table in result["tables"]:
-                df = pd.DataFrame(table["data"])
-                st.dataframe(df)
+                for table in result["tables"]:
+                    df = pd.DataFrame(table["data"])
+                    st.dataframe(df)
+            except Exception as e:
+                st.write(response)
+                st.write(type(response))
+                raise e
                 
 #             files = {
 #                 "file": (uploaded_file.name, uploaded_file, uploaded_file.type)
