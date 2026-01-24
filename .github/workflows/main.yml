@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BACKEND_APP: tablextract-api
       FRONTEND_APP: tablextract-ui
       PYTHON_VERSION: "3.10" 
 
@@ -28,13 +27,6 @@ jobs:
       #   working-directory: ./tests
       #   run: |
       #     pytest || echo "Skipping tests / optional"
-
-      - name: Deploy backend to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.BACKEND_APP }}
-          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./table-extract-backend
     
       - name: Deploy frontend to Azure
         uses: azure/webapps-deploy@v2
