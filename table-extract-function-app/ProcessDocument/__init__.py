@@ -1,14 +1,13 @@
 import logging
 import azure.functions as func
-from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from uuid import uuid4
 import os
 import json
-from docx2pdf import convert
-import tempfile
+import pypandoc
+from io import BytesIO
 
 STORAGE_ACCOUNT_URL = os.environ["STORAGE_ACCOUNT_URL"]
 CONTAINER_NAME = os.environ["CONTAINER_NAME"]
@@ -16,18 +15,22 @@ DOCUMENT_INTELLIGENCE_ENDPOINT = os.environ["DOCUMENT_INTELLIGENCE_ENDPOINT"]
 DOCUMENT_INTELLIGENCE_KEY = os.environ["DOCUMENT_INTELLIGENCE_KEY"]
 BLOB_CONN_STR = os.environ["BLOB_CONN_STR"]
 
-def convert_docx_to_pdf(file_bytes):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp_docx:
-        tmp_docx.write(file_bytes)
-        tmp_docx.flush()
-        pdf_path = tmp_docx.name.replace(".docx", ".pdf")
-        convert(tmp_docx.name, pdf_path)
-        with open(pdf_path, "rb") as f:
-            pdf_bytes = f.read()
+def convert_docx_to_pdf_in_memory(file_bytes):
+    tmp_docx_path = f"/tmp/{uuid4()}.docx"
+    tmp_pdf_path = f"/tmp/{uuid4()}.pdf"
+    
+    with open(tmp_docx_path, "wb") as f:
+        f.write(file_bytes)
+
+    pypandoc.convert_file(tmp_docx_path, 'pdf', outputfile=tmp_pdf_path)
+
+    with open(tmp_pdf_path, "rb") as f:
+        pdf_bytes = f.read()
+    
     return pdf_bytes
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("Processing document for table extraction")
+    logging.info("Processing document for table extraction.")
 
     try:
         file = req.files.get("file")
@@ -45,9 +48,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         blob_client.upload_blob(file_bytes, overwrite=True)
 
         if file_ext == "docx":
-            logging.info("Converting DOCX to PDF")
-            file_bytes = convert_docx_to_pdf(file_bytes)
-            # zmieniamy nazwę pliku, żeby miała .pdf
+            logging.info("Converting DOCX to PDF in memory")
+            file_bytes = convert_docx_to_pdf_in_memory(file_bytes)
             filename = filename.rsplit(".", 1)[0] + ".pdf"
 
         elif file_ext != "pdf":
