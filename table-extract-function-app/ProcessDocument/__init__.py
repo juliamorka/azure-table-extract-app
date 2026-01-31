@@ -8,12 +8,13 @@ from uuid import uuid4
 import os
 import json
 
+
 STORAGE_ACCOUNT_URL = os.environ["STORAGE_ACCOUNT_URL"]
 CONTAINER_NAME = os.environ["CONTAINER_NAME"]
 DOCUMENT_INTELLIGENCE_ENDPOINT = os.environ["DOCUMENT_INTELLIGENCE_ENDPOINT"]
 DOCUMENT_INTELLIGENCE_KEY = os.environ["DOCUMENT_INTELLIGENCE_KEY"]
 BLOB_CONN_STR = os.environ["BLOB_CONN_STR"]
-SUPPORTED_FILE_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"] 
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Processing document for table extraction")
@@ -26,27 +27,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 status_code=400
             )
 
-        if file.content_type not in SUPPORTED_FILE_TYPES:
-            return func.HttpResponse(
-                f"Unsupported file type: {file.content_type}",
-                status_code=400
-            )
-
         file_bytes = file.read()
         filename = file.filename or f"{uuid4()}.pdf"
-        
 
-        if file.content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            if not filename.lower().endswith(".docx"):
-                filename += ".docx"
-        else:
-            if not filename.lower().endswith(".pdf"):
-                filename += ".pdf"
+        credential = DefaultAzureCredential()
 
         blob_service_client = BlobServiceClient.from_connection_string(BLOB_CONN_STR)
+
         container_client = blob_service_client.get_container_client(CONTAINER_NAME)
         blob_name = f"uploads/{uuid4()}-{filename}"
         blob_client = container_client.get_blob_client(blob_name)
+
         blob_client.upload_blob(file_bytes, overwrite=True)
 
         document_client = DocumentAnalysisClient(
@@ -67,7 +58,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             rows = table.row_count
             cols = table.column_count
 
-            table_data = [[""] * cols for _ in range(rows)]
+            table_data = [
+                [""] * cols for _ in range(rows)
+            ]
 
             for cell in table.cells:
                 table_data[cell.row_index][cell.column_index] = cell.content
