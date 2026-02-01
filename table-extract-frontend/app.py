@@ -16,18 +16,18 @@ st.title("TableExtract")
 
 st.markdown(
     """
-    Asynchronuous tables extraction for your PDF and Docx files.
+    Fast and convenient tables extraction for all your PDF files.
     """
 )
 
 uploaded_file = st.file_uploader(
     "Upload a file",
-    type=["pdf", "docx"]
+    type=["pdf"]
 )
 
 if uploaded_file is not None:
     if st.button("Extract"):
-        with st.spinner("Queuing..."):
+        with st.spinner("Extracting..."):
             response = requests.post(
                 FUNCTION_URL,
                 files={"file": uploaded_file}
@@ -40,5 +40,4 @@ if uploaded_file is not None:
                     st.dataframe(df)
             except Exception as e:
                 st.write(response)
-                st.write(type(response))
-                raise e
+                st.write("Please try again or reach out to the app administrators for help!)
