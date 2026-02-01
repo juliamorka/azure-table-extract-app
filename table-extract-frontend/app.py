@@ -40,4 +40,4 @@ if uploaded_file is not None:
                     st.dataframe(df)
             except Exception as e:
                 st.write(response)
-                st.write("Please try again or reach out to the app administrators for help!)
+                st.write("Please try again or reach out to the app administrators for help!")
