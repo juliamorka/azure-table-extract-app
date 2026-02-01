@@ -1,4 +1,8 @@
 # azure-table-extract-app
+Table Extract makes extracting tables from PDF files easy and fast!
+
+<img src="docs/demo.png" width="700" />
+    
 ### App architecture
 
 ![Architecture](docs/architecture-flowchart.png)
