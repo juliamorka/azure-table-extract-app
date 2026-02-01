@@ -9,11 +9,11 @@ azure-table-extract-app/
 ├── .github/workflows/
     └── main.yml
 ├── README.md
-├── config/
 ├── docs/
 ├── table-extract-function-app/
 ├── table-extract-frontend/
 ├── tests/
+├── terraform/
 └── README.md
 ```
 ### Running the app locally
@@ -23,4 +23,11 @@ First create the virtual environment with requirements.txt using venv, uv, conda
 In first terminal, use the following command to run streamlit frontend:
 ```bash
 streamlit run app.py
+```
+### Infra setup
+To setup infrastructure on Azure, run following commands:
+```bash
+cd terraform/
+chmod u+x terraform-deploy.sh
+./terraform-deploy.sh
 ```
