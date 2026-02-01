@@ -24,6 +24,7 @@ azure-table-extract-app/
 ├── .github/workflows/
     └── main.yml
 ├── README.md
+├── alerts-and-metrics/
 ├── docs/
 ├── table-extract-function-app/
 ├── table-extract-frontend/
@@ -57,3 +58,6 @@ For cleanup, use the following command to remove Azure components created via Te
 ```bash
 terraform destroy
 ```
+### Monitoring
+
+See the `alerts-and-metrics/` catalog for alerts, logs and metrics setup.
